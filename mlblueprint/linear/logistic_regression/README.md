@@ -2,7 +2,7 @@
 
 Family: linear
 Completion & Scope: `complete`
-Maintainers: @aryan-raj
+Maintainers: @Aryan1092raj
 
 Binary classification using a linear model passed through the sigmoid function, trained by gradient descent on log-loss. Teaches numerical stability of the loss, gradient computation, and how a simple linear model becomes a probability estimator.
 
@@ -16,7 +16,8 @@ Binary classification using a linear model passed through the sigmoid function, 
 
 ## Docs
 
-[Intuition](docs/intuition.md), [Derivation](docs/derivation.md), [Complexity](docs/complexity.md), [References](docs/references.md)
+[Intuition](docs/intuition.md), [Derivation](docs/derivation.md),
+[Complexity](docs/complexity.md), [References](docs/references.md)
 
 ## Usage
 
@@ -35,15 +36,18 @@ model.predict_proba(np.array([[1.5]]))  # array([0.97...])
 model.loss_history_[-1] < model.loss_history_[0]  # True
 ```
 
-`fit` learns `w_` (weights) and `b_` (intercept), and records the loss at every
-iteration in `loss_history_`. Labels must be exactly 0 and 1.
+`fit` learns `w_` (weights) and `b_` (intercept), and records the regularized
+loss (`log-loss + lam * ||w||^2`, see derivation section 8) at every iteration
+in `loss_history_`. Labels must be exactly 0 and 1. Set `lam > 0` for L2
+regularization; the bias is never regularized.
 
-The pure-Python version takes and returns lists instead of arrays:
+The pure-Python version takes and returns lists instead of arrays and accepts
+the same hyperparameters:
 
 ```python
 from mlblueprint.linear import LogisticRegressionScratch
 
-model = LogisticRegressionScratch(lr=0.5, n_iters=2000, random_state=42)
+model = LogisticRegressionScratch(lr=0.5, n_iters=2000, lam=0.0, random_state=42)
 model.fit([[-2.0], [-1.0], [1.0], [2.0]], [0, 0, 1, 1])
 ```
 
