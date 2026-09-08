@@ -11,6 +11,7 @@ request that adds the algorithm.
 | Algorithm | Maintainer |
 |---|---|
 | Linear Regression | @Frozen-afk |
+| Logistic Regression | @Aryan1092raj |
 
 ## Trees and ensembles
 

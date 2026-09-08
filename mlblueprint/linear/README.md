@@ -9,6 +9,7 @@ Algorithms that learn linear relationships between features and targets.
 | Algorithm | Status | Description |
 |-----------|--------|-------------|
 | [Linear Regression](linear_regression/) | `complete` | Predicts continuous values using a linear equation |
+| [Logistic Regression](logistic_regression/) | `complete` | Predicts the probability of a binary class using the sigmoid |
 
 ## Common Properties
 
