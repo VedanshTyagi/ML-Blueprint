@@ -1,5 +1,7 @@
 """Tests for the Logistic Regression implementations."""
 
+import importlib.util
+import math
 import warnings
 
 import numpy as np
@@ -9,6 +11,13 @@ from mlblueprint.core.base import NotFittedError
 from mlblueprint.core.datasets import make_blobs
 from mlblueprint.core.metrics import accuracy_score
 from mlblueprint.linear import LogisticRegression, LogisticRegressionScratch
+from mlblueprint.linear.logistic_regression.viz import LogisticRegressionPanel
+
+_HAS_SKLEARN = importlib.util.find_spec("sklearn") is not None
+if _HAS_SKLEARN:
+    from sklearn.linear_model import LogisticRegression as SkLogisticRegression
+else:  # pragma: no cover - placeholder so the name always exists
+    SkLogisticRegression = None
 
 
 def standardize(X):
@@ -99,6 +108,7 @@ class TestLogisticRegression:
 class TestAgainstReferences:
     """Checks against scikit-learn and against the pure-Python version."""
 
+    @pytest.mark.skipif(not _HAS_SKLEARN, reason="scikit-learn not installed")
     def test_matches_sklearn(self):
         """Same decisions as scikit-learn on overlapping, non-separable classes.
 
@@ -106,12 +116,10 @@ class TestAgainstReferences:
         different paths to the same optimum, and on well-separated data the optimum is
         at infinity, so what has to agree is the boundary, not the raw numbers.
         """
-        pytest.importorskip("sklearn")
-        from sklearn.linear_model import LogisticRegression as SkLogisticRegression
-
         X, y = make_blobs(n_samples=200, centers=2, cluster_std=3.0, random_state=0)
         X = standardize(X)
 
+        assert SkLogisticRegression is not None  # guaranteed by the skipif mark
         ours = LogisticRegression(lr=0.5, n_iters=5000, lam=0.0, random_state=0)
         ours.fit(X, y)
         theirs = SkLogisticRegression(penalty=None, max_iter=5000).fit(X, y)
@@ -207,7 +215,6 @@ class TestEdgeCases:
 def test_viz_panel_produces_frames():
     """The panel is data until something draws it, so it tests without a browser."""
     pytest.importorskip("matplotlib")
-    from mlblueprint.linear.logistic_regression.viz import LogisticRegressionPanel
 
     panel = LogisticRegressionPanel()
     frames = panel.frames(lr=0.1, n_iters=50)
@@ -263,9 +270,6 @@ class TestScratchParity:
 
     def test_scratch_extreme_inputs_do_not_overflow(self):
         """Large |z| must give a finite probability, no overflow or crash."""
-        import math
-
-        assert LogisticRegressionScratch is not None
         model = LogisticRegressionScratch(lr=0.5, n_iters=200, random_state=0)
         model.fit([[-2.0], [2.0]], [0, 1])
 

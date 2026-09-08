@@ -1,5 +1,21 @@
 # Logistic Regression — Derivation
 
+## 0. Notation
+
+One symbol, one meaning throughout. Bold is a vector over all $n$ samples,
+plain with $(i)$ is example $i$.
+
+| Symbol | Means | Code name |
+|---|---|---|
+| $\mathcal{L}$ | likelihood (only ever the product) | — |
+| $L$ | mean unregularized log-loss | — |
+| $\ell_i$ | per-example contribution, $L = \frac{1}{n}\sum_i \ell_i$ | — |
+| $J$ | regularized objective, $J = L + \lambda\lVert w\rVert^2$ (§8 only) | `loss_history_` |
+| $z^{(i)}$, $\mathbf{z}$ | scalar logit / vector of all logits | `z_list`, `z` |
+| $\hat{y}^{(i)}$, $\hat{\mathbf{y}}$ | scalar probability / vector of all probabilities | `y_hat` |
+| $\alpha$ | learning rate | `lr` |
+| $\lambda$ | L2 strength | `lam` |
+
 ## 1. The Model
 
 For a dataset with $n$ samples and $d$ features, the logistic regression model predicts the probability of the positive class as:
@@ -8,7 +24,7 @@ $$\hat{y} = \sigma(z) = \frac{1}{1 + e^{-z}}$$
 
 where the linear predictor $z$ is:
 
-$$z = w_1x_1 + w_2x_2 + ... + w_dx_d + b$$
+$$z = w_1 x_1 + w_2 x_2 + \cdots + w_d x_d + b$$
 
 In vectorized notation:
 
@@ -18,7 +34,7 @@ $$\hat{y} = \sigma(Xw + b)$$
 
 Where:
 - **$X$** is the input feature matrix of shape $(n, d)$
-- **$w$** is the weight vector of shape $(d, 1)$
+- **$w$** is the weight vector of shape $(d,)$
 - **$b$** is the bias term (scalar)
 - **$n$** is the number of training examples
 - **$d$** is the number of features
@@ -117,9 +133,9 @@ We repeat until convergence (loss stops decreasing significantly).
 
 ## 6. Prediction
 
-For new input $X$, the predicted probability is:
+For new inputs $X_{\text{new}}$, the predicted probability is:
 
-$$\hat{y} = \sigma(Xw + b)$$
+$$\hat{y} = \sigma(X_{\text{new}} w + b)$$
 
 The class prediction uses threshold 0.5:
 
@@ -127,7 +143,7 @@ $$\text{class} = \begin{cases} 1 & \text{if } \hat{y} \geq 0.5 \\ 0 & \text{othe
 
 Since $\sigma(z) \ge 0.5 \iff z \ge 0$, the decision boundary is:
 
-$$\boxed{w^T x + b = 0}$$
+$$w^T x + b = 0$$
 
 This confirms logistic regression is a **linear classifier** — the boundary in feature space is a hyperplane.
 
