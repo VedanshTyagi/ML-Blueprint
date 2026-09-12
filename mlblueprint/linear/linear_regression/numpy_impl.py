@@ -78,7 +78,7 @@ class LinearRegression:
     def equation_fit(self, X, y):
         """
         Fit the model using the closed-form solution (Normal Equation).
-        
+
         Theta = (X^T * X)^-1 * X^T * y
 
         Parameters
